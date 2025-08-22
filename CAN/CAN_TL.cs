@@ -22,20 +22,11 @@ public class Can_TL
         public void GetCANDevice()
         {
             PcanChannel channel = PcanChannel.None;
-
-            // The amount of hardware currently attached to the system is retrieved  
-            PcanStatus result = Api.GetValue(channel, PcanParameter.AttachedChannelsCount, out uint channelsCount);
-            if (result != PcanStatus.OK)
+            
+            try
             {
-                // An error occurred  
-                Api.GetErrorText(result, out var errorText);
-                Console.WriteLine(errorText);
-            }
-            else
-            {
-                // Information about the hardware currently attached to the system is retrieved  
-                channelsInformation = new PcanChannelInformation[channelsCount];
-                result = Api.GetValue(channel, PcanParameter.AttachedChannelsInformation, channelsInformation);
+                // The amount of hardware currently attached to the system is retrieved  
+              PcanStatus  result = Api.GetValue(channel, PcanParameter.AttachedChannelsCount, out uint channelsCount);
                 if (result != PcanStatus.OK)
                 {
                     // An error occurred  
@@ -44,18 +35,50 @@ public class Can_TL
                 }
                 else
                 {
-                    // The information about the channels is shown  
-                    Console.WriteLine($"There are {channelsCount} Channels attached to the system:");
-                    for (int i = 0; i < channelsCount; i++)
+                    // Information about the hardware currently attached to the system is retrieved  
+                    channelsInformation = new PcanChannelInformation[channelsCount];
+                    result = Api.GetValue(channel, PcanParameter.AttachedChannelsInformation, channelsInformation);
+                    if (result != PcanStatus.OK)
                     {
-                        Console.WriteLine(" {0}) ---------------------------", i + 1);
-                        Console.WriteLine("    Name: {0}", channelsInformation[i].DeviceName);
-                        Console.WriteLine("    Handle: 0x{0:X}", channelsInformation[i].ChannelHandle);
-                        Console.WriteLine("    Controller: {0}", channelsInformation[i].ControllerNumber);
-                        Console.WriteLine("    Condition: {0}", channelsInformation[i].ChannelCondition);
+                        // An error occurred  
+                        Api.GetErrorText(result, out var errorText);
+                        Console.WriteLine(errorText);
                     }
+                    else
+                    {
+                        // The information about the channels is shown  
+                        Console.WriteLine($"There are {channelsCount} Channels attached to the system:");
+                        for (int i = 0; i < channelsCount; i++)
+                        {
+                            Console.WriteLine(" {0}) ---------------------------", i + 1);
+                            Console.WriteLine("    Name: {0}", channelsInformation[i].DeviceName);
+                            Console.WriteLine("    Handle: 0x{0:X}", channelsInformation[i].ChannelHandle);
+                            Console.WriteLine("    Controller: {0}", channelsInformation[i].ControllerNumber);
+                            Console.WriteLine("    Condition: {0}", channelsInformation[i].ChannelCondition);
+                        }
+                    }
+
                 }
+
             }
+            catch (TypeInitializationException ex)
+            {
+                // 说明 Peak.Can.Basic.Api 类加载时出错
+                var detail = ex.InnerException?.Message ?? ex.Message;
+                Console.WriteLine("PCAN 初始化错误: " + detail);
+            }
+            catch (PcanBasicException ex)
+            {
+                // PCAN 自己抛的异常
+                Console.WriteLine("PCAN API 错误: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // 兜底异常
+                Console.WriteLine("其他异常: " + ex.Message);
+            }
+           
+            
 
             //result = Api.Initialize(PCAN_channel, CANBaudrate); // 使用PcanStatus类型  
             //if (result != PcanStatus.OK)
