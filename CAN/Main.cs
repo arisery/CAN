@@ -11,7 +11,9 @@ namespace CAN
     {
         public Can_TL CAN_TL;
         public AntdUI.FormFloatButton? FloatButton1;
-        public FloatButton.Config config;
+        public FloatButton.Config? config;
+        public System.Windows.Forms.Timer dataReceiveTimer;
+
         public Main()
         {
 
@@ -66,41 +68,17 @@ namespace CAN
 
             FloatButton1 = AntdUI.FloatButton.open(config);
 
-            // this.Controls.Add(FloatButton1);
-            //FloatButton1 = AntdUI.FloatButton.open(new AntdUI.FloatButton.Config(this, new AntdUI.FloatButton.ConfigBtn[] {
-            //                new AntdUI.FloatButton.ConfigBtn("id1", "SearchOutlined", true){
-            //                    Tooltip = "搜索一下",
-            //                    Type= AntdUI.TTypeMini.Primary,
-            //                },
-            //                new AntdUI.FloatButton.ConfigBtn("id2", "vvvv"){
-            //                    //Badge = " ",
-            //                    Tooltip = "笑死人",
-            //                },
-            //                new AntdUI.FloatButton.ConfigBtn("id3","aaa"){
-            //                    //Badge = "9",
-            //                    Tooltip = "救救我",
-            //                },
-            //                new AntdUI.FloatButton.ConfigBtn("id4", "PoweroffOutlined"){
-            //                  //  Badge = "99+",
-            //                    Tooltip = "没救了",
-            //                    Round = false,
-            //                    Type= AntdUI.TTypeMini.Primary,
-            //                }
-            //            }, btn =>
-            //            {
-            //                btn.Loading = true;
-            //                AntdUI.ITask.Run(() =>
-            //                {
-            //                    System.Threading.Thread.Sleep(2000);
-            //                    btn.Loading = false;
-            //                });
-            //                AntdUI.Message.info(this, "点击了：" + btn.Name, Font);
-            //            }));
 
             if (FloatButton1 == null)
             {
                 MessageBox.Show("无法创建浮动按钮");
             }
+            // 初始化定时器
+            dataReceiveTimer = new System.Windows.Forms.Timer();
+            dataReceiveTimer.Interval = 100; // 设置定时器间隔，单位为毫秒
+            dataReceiveTimer.Tick += new EventHandler(DataReceiveTimer_Tick);
+
+
         }
         private void button_FreshChannel_Click(object sender, EventArgs e)
         {
@@ -141,17 +119,17 @@ namespace CAN
 
 
                 label_OpenedDevice.Text = " ";
-                
-               
+
+
                 if (CAN_TL.IsOpen == true)
                 {
                     CAN_TL.Close(CAN_TL.PCAN_channel);
                 }
-               
+
                 CAN_TL.PCAN_channel = CAN_TL.channelsInformation[select_AvailableDevice.SelectedIndex].ChannelHandle;
 
                 //打开新设备
-               if( CAN_TL.Open(CAN_TL.PCAN_channel,CAN_TL.CANBaudrate))
+                if (CAN_TL.Open(CAN_TL.PCAN_channel, CAN_TL.CANBaudrate))
                 {
                     label_OpenedDevice.Text = $"{select_AvailableDevice.Text}";
                 }
@@ -219,26 +197,130 @@ namespace CAN
 
             CAN_TL.CAN_ID = (uint)inputNumber_CAN_ID.Value; // 获取CAN ID
             // 发送数据
-            CAN_TL.SendData(CAN_TL.CAN_ID, CAN_TL.bytes_send,8);
+            CAN_TL.SendData(CAN_TL.CAN_ID, CAN_TL.bytes_send, 8);
         }
 
         private void button_Receive_Click(object sender, EventArgs e)
         {
-           uint ret = 0;
-            ret = CAN_TL.ReadData(out string? str);
-            if(ret!=0)
+            if (dataReceiveTimer.Enabled)
             {
-               
-                    textBox_CAN_Data.AppendText(str);
-                textBox_CAN_Data.ScrollToCaret();
-                // 限制最多1000行
-                if (textBox_CAN_Data.Lines.Length > 1000)
-                {
-                    textBox_CAN_Data.Text = string.Join(Environment.NewLine,
-                    textBox_CAN_Data.Lines.Skip(textBox_CAN_Data.Lines.Length - 1000));
-                }
+                StopReceiving();
+                button_Receive.Text = "开始接收";
             }
+            else
+            {
+                StartReceiving();
+                button_Receive.Text = "停止接收";
+            }
+            //uint ret = 0;
+            //ret = CAN_TL.ReadData(out string? str);
+            //if (ret != 0)
+            //{
+
+            //    textBox_CAN_Data.AppendText(str);
+            //    textBox_CAN_Data.ScrollToCaret();
+            //    // 限制最多1000行
+            //    if (textBox_CAN_Data.Lines.Length > 1000)
+            //    {
+            //        textBox_CAN_Data.Text = string.Join(Environment.NewLine,
+            //        textBox_CAN_Data.Lines.Skip(textBox_CAN_Data.Lines.Length - 1000));
+            //    }
+            //}
 
         }
+
+        private void inputNumber_send4_ValueChanged(object sender, DecimalEventArgs e)
+        {
+
+        }
+
+        private void label_CAN_ID_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radio_Torque_CheckedChanged(object sender, BoolEventArgs e)
+        {
+
+        }
+
+        private void button_NumberScale_Click(object sender, EventArgs e)
+        {
+            if(button_NumberScale.Text == "十六进制")
+            {
+                inputNumber_send1.Hexadecimal = false;
+                inputNumber_send2.Hexadecimal = false;
+                inputNumber_send3.Hexadecimal = false;
+                inputNumber_send4.Hexadecimal = false;
+                inputNumber_send5.Hexadecimal = false;
+                inputNumber_send6.Hexadecimal = false;
+                inputNumber_send7.Hexadecimal = false;
+                inputNumber_send8.Hexadecimal = false;
+                button_NumberScale.Text = "十进制";
+
+            }
+            else 
+            {
+                inputNumber_send1.Hexadecimal = true;
+                inputNumber_send2.Hexadecimal = true;
+                inputNumber_send3.Hexadecimal = true;
+                inputNumber_send4.Hexadecimal = true;
+                inputNumber_send5.Hexadecimal = true;
+                inputNumber_send6.Hexadecimal = true;
+                inputNumber_send7.Hexadecimal = true;
+                inputNumber_send8.Hexadecimal = true;
+
+                button_NumberScale.Text = "十六进制";
+            }
+
+
+
+        }
+        // 定时器Tick事件处理方法
+        public void DataReceiveTimer_Tick(object sender, EventArgs e)
+        {
+            uint ret = 0;
+            ret = CAN_TL.ReadData(out string? str);
+            if (ret != 0)
+            {
+                // 使用Invoke确保在UI线程上更新控件
+                if (textBox_CAN_Data.InvokeRequired)
+                {
+                    textBox_CAN_Data.Invoke(new Action(() => UpdateTextBox(str)));
+                }
+                else
+                {
+                    UpdateTextBox(str);
+                }
+            }
+        }
+
+        // 更新TextBox的方法
+        private void UpdateTextBox(string str)
+        {
+            textBox_CAN_Data.AppendText(str);
+            textBox_CAN_Data.ScrollToCaret();
+
+            // 限制最多1000行
+            if (textBox_CAN_Data.Lines.Length > 1000)
+            {
+                textBox_CAN_Data.Text = string.Join(Environment.NewLine,
+                    textBox_CAN_Data.Lines.Skip(textBox_CAN_Data.Lines.Length - 1000));
+            }
+        }
+
+        // 开始定时器的方法
+        private void StartReceiving()
+        {
+            dataReceiveTimer.Start();
+        }
+
+        // 停止定时器的方法
+        private void StopReceiving()
+        {
+            dataReceiveTimer.Stop();
+        }
+
+      
     }
 }

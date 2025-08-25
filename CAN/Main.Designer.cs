@@ -36,7 +36,6 @@
             label_OpenedDevice = new AntdUI.Label();
             label2 = new AntdUI.Label();
             button_CloseDevice = new AntdUI.Button();
-            tooltip1 = new AntdUI.Tooltip();
             button_Transmit = new AntdUI.Button();
             button_Tip = new AntdUI.Button();
             button_boot = new AntdUI.Button();
@@ -66,6 +65,7 @@
             button_Receive = new AntdUI.Button();
             inputNumber_CAN_ID = new AntdUI.InputNumber();
             label_CAN_ID = new AntdUI.Label();
+            button_NumberScale = new AntdUI.Button();
             panel_Mode.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -86,7 +86,7 @@
             pageHeader_Top.Name = "pageHeader_Top";
             pageHeader_Top.ShowButton = true;
             pageHeader_Top.ShowIcon = true;
-            pageHeader_Top.Size = new Size(884, 39);
+            pageHeader_Top.Size = new Size(1421, 39);
             pageHeader_Top.TabIndex = 1;
             pageHeader_Top.Text = "CAN";
             pageHeader_Top.Click += pageHeader_Top_Click;
@@ -121,9 +121,9 @@
             // label_OpenedDevice
             // 
             label_OpenedDevice.BackColor = SystemColors.ActiveCaption;
-            label_OpenedDevice.Location = new Point(669, 152);
+            label_OpenedDevice.Location = new Point(635, 145);
             label_OpenedDevice.Name = "label_OpenedDevice";
-            label_OpenedDevice.Size = new Size(141, 23);
+            label_OpenedDevice.Size = new Size(181, 30);
             label_OpenedDevice.TabIndex = 5;
             label_OpenedDevice.Text = "";
             // 
@@ -144,21 +144,11 @@
             button_CloseDevice.Text = "关闭";
             button_CloseDevice.Click += button_CloseDevice_Click;
             // 
-            // tooltip1
-            // 
-            tooltip1.Location = new Point(553, 276);
-            tooltip1.MaximumSize = new Size(68, 38);
-            tooltip1.MinimumSize = new Size(68, 38);
-            tooltip1.Name = "tooltip1";
-            tooltip1.Size = new Size(68, 38);
-            tooltip1.TabIndex = 8;
-            tooltip1.Text = "tooltip1";
-            // 
             // button_Transmit
             // 
-            button_Transmit.Location = new Point(458, 292);
+            button_Transmit.Location = new Point(550, 340);
             button_Transmit.Name = "button_Transmit";
-            button_Transmit.Size = new Size(47, 42);
+            button_Transmit.Size = new Size(75, 42);
             button_Transmit.TabIndex = 9;
             button_Transmit.Text = "发送";
             button_Transmit.Click += button_Transmit_Click;
@@ -216,9 +206,9 @@
             // 
             // label_position
             // 
-            label_position.Location = new Point(50, 236);
+            label_position.Location = new Point(50, 227);
             label_position.Name = "label_position";
-            label_position.Size = new Size(75, 23);
+            label_position.Size = new Size(66, 34);
             label_position.TabIndex = 17;
             label_position.Text = "position";
             // 
@@ -227,6 +217,7 @@
             inputNumber_velocity.Location = new Point(140, 169);
             inputNumber_velocity.Name = "inputNumber_velocity";
             inputNumber_velocity.SelectionStart = 1;
+            inputNumber_velocity.ShowControl = false;
             inputNumber_velocity.Size = new Size(135, 41);
             inputNumber_velocity.TabIndex = 18;
             inputNumber_velocity.Text = "0";
@@ -236,6 +227,7 @@
             inputNumber_torque.Location = new Point(140, 123);
             inputNumber_torque.Name = "inputNumber_torque";
             inputNumber_torque.SelectionStart = 1;
+            inputNumber_torque.ShowControl = false;
             inputNumber_torque.Size = new Size(135, 41);
             inputNumber_torque.TabIndex = 19;
             inputNumber_torque.Text = "0";
@@ -245,6 +237,7 @@
             inputNumber_positon.Location = new Point(140, 220);
             inputNumber_positon.Name = "inputNumber_positon";
             inputNumber_positon.SelectionStart = 1;
+            inputNumber_positon.ShowControl = false;
             inputNumber_positon.Size = new Size(135, 41);
             inputNumber_positon.TabIndex = 20;
             inputNumber_positon.Text = "0";
@@ -257,50 +250,55 @@
             panel_Mode.Controls.Add(radio_Torque);
             panel_Mode.Location = new Point(291, 123);
             panel_Mode.Name = "panel_Mode";
-            panel_Mode.Size = new Size(120, 131);
+            panel_Mode.Size = new Size(148, 166);
             panel_Mode.TabIndex = 21;
             panel_Mode.Text = "panel1";
             // 
             // label_Mode
             // 
-            label_Mode.Location = new Point(3, 6);
+            label_Mode.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label_Mode.Location = new Point(6, 6);
             label_Mode.Name = "label_Mode";
-            label_Mode.Size = new Size(75, 23);
+            label_Mode.Size = new Size(94, 34);
             label_Mode.TabIndex = 24;
             label_Mode.Text = "MODE";
+            label_Mode.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // radio_position
             // 
-            radio_position.Location = new Point(3, 93);
+            radio_position.Location = new Point(3, 124);
             radio_position.Name = "radio_position";
-            radio_position.Size = new Size(75, 23);
+            radio_position.Size = new Size(97, 28);
             radio_position.TabIndex = 23;
             radio_position.Text = "position";
             // 
             // radio_velocity
             // 
-            radio_velocity.Location = new Point(3, 64);
+            radio_velocity.Location = new Point(3, 85);
             radio_velocity.Name = "radio_velocity";
-            radio_velocity.Size = new Size(75, 23);
+            radio_velocity.Size = new Size(97, 33);
             radio_velocity.TabIndex = 22;
             radio_velocity.Text = "velocity";
             // 
             // radio_Torque
             // 
-            radio_Torque.Location = new Point(3, 35);
+            radio_Torque.Location = new Point(3, 46);
             radio_Torque.Name = "radio_Torque";
-            radio_Torque.Size = new Size(75, 23);
+            radio_Torque.Size = new Size(97, 33);
             radio_Torque.TabIndex = 0;
             radio_Torque.Text = "Torque";
+            radio_Torque.CheckedChanged += radio_Torque_CheckedChanged;
             // 
             // inputNumber_send1
             // 
             inputNumber_send1.Location = new Point(3, 3);
             inputNumber_send1.Name = "inputNumber_send1";
             inputNumber_send1.SelectionStart = 1;
-            inputNumber_send1.Size = new Size(42, 34);
+            inputNumber_send1.ShowControl = false;
+            inputNumber_send1.Size = new Size(50, 35);
             inputNumber_send1.TabIndex = 22;
             inputNumber_send1.Text = "0";
+            inputNumber_send1.TextAlign = HorizontalAlignment.Center;
             // 
             // panel1
             // 
@@ -312,115 +310,144 @@
             panel1.Controls.Add(inputNumber_send3);
             panel1.Controls.Add(inputNumber_send2);
             panel1.Controls.Add(inputNumber_send1);
-            panel1.Location = new Point(37, 292);
+            panel1.Location = new Point(87, 336);
             panel1.Name = "panel1";
-            panel1.Size = new Size(393, 42);
+            panel1.Size = new Size(446, 42);
             panel1.TabIndex = 23;
             panel1.Text = "panel1";
             panel1.Click += panel1_Click;
             // 
             // inputNumber_send8
             // 
-            inputNumber_send8.Location = new Point(334, 5);
+            inputNumber_send8.Location = new Point(392, 4);
             inputNumber_send8.Name = "inputNumber_send8";
             inputNumber_send8.SelectionStart = 1;
-            inputNumber_send8.Size = new Size(42, 34);
+            inputNumber_send8.ShowControl = false;
+            inputNumber_send8.Size = new Size(50, 35);
             inputNumber_send8.TabIndex = 29;
             inputNumber_send8.Text = "0";
+            inputNumber_send8.TextAlign = HorizontalAlignment.Center;
             // 
             // inputNumber_send7
             // 
-            inputNumber_send7.Location = new Point(286, 5);
+            inputNumber_send7.Location = new Point(336, 3);
             inputNumber_send7.Name = "inputNumber_send7";
             inputNumber_send7.SelectionStart = 1;
-            inputNumber_send7.Size = new Size(42, 34);
+            inputNumber_send7.ShowControl = false;
+            inputNumber_send7.Size = new Size(50, 35);
             inputNumber_send7.TabIndex = 28;
             inputNumber_send7.Text = "0";
+            inputNumber_send7.TextAlign = HorizontalAlignment.Center;
             // 
             // inputNumber_send6
             // 
-            inputNumber_send6.Location = new Point(238, 5);
+            inputNumber_send6.Location = new Point(283, 4);
             inputNumber_send6.Name = "inputNumber_send6";
             inputNumber_send6.SelectionStart = 1;
-            inputNumber_send6.Size = new Size(42, 34);
+            inputNumber_send6.ShowControl = false;
+            inputNumber_send6.Size = new Size(50, 35);
             inputNumber_send6.TabIndex = 27;
             inputNumber_send6.Text = "0";
+            inputNumber_send6.TextAlign = HorizontalAlignment.Center;
             // 
             // inputNumber_send5
             // 
-            inputNumber_send5.Location = new Point(190, 5);
+            inputNumber_send5.Location = new Point(227, 3);
             inputNumber_send5.Name = "inputNumber_send5";
             inputNumber_send5.SelectionStart = 1;
-            inputNumber_send5.Size = new Size(42, 34);
+            inputNumber_send5.ShowControl = false;
+            inputNumber_send5.Size = new Size(50, 35);
             inputNumber_send5.TabIndex = 26;
             inputNumber_send5.Text = "0";
+            inputNumber_send5.TextAlign = HorizontalAlignment.Center;
             // 
             // inputNumber_send4
             // 
-            inputNumber_send4.Location = new Point(142, 5);
+            inputNumber_send4.Location = new Point(171, 3);
             inputNumber_send4.Name = "inputNumber_send4";
             inputNumber_send4.SelectionStart = 1;
-            inputNumber_send4.Size = new Size(42, 34);
+            inputNumber_send4.ShowControl = false;
+            inputNumber_send4.Size = new Size(50, 35);
             inputNumber_send4.TabIndex = 25;
             inputNumber_send4.Text = "0";
+            inputNumber_send4.TextAlign = HorizontalAlignment.Center;
+            inputNumber_send4.ValueChanged += inputNumber_send4_ValueChanged;
             // 
             // inputNumber_send3
             // 
-            inputNumber_send3.Location = new Point(94, 3);
+            inputNumber_send3.Location = new Point(115, 4);
             inputNumber_send3.Name = "inputNumber_send3";
             inputNumber_send3.SelectionStart = 1;
-            inputNumber_send3.Size = new Size(42, 34);
+            inputNumber_send3.ShowControl = false;
+            inputNumber_send3.Size = new Size(50, 35);
             inputNumber_send3.TabIndex = 24;
             inputNumber_send3.Text = "0";
+            inputNumber_send3.TextAlign = HorizontalAlignment.Center;
             // 
             // inputNumber_send2
             // 
-            inputNumber_send2.Location = new Point(46, 3);
+            inputNumber_send2.Location = new Point(59, 3);
             inputNumber_send2.Name = "inputNumber_send2";
             inputNumber_send2.SelectionStart = 1;
-            inputNumber_send2.Size = new Size(42, 34);
+            inputNumber_send2.ShowControl = false;
+            inputNumber_send2.Size = new Size(50, 35);
             inputNumber_send2.TabIndex = 23;
             inputNumber_send2.Text = "0";
+            inputNumber_send2.TextAlign = HorizontalAlignment.Center;
             // 
             // textBox_CAN_Data
             // 
-            textBox_CAN_Data.Location = new Point(40, 356);
+            textBox_CAN_Data.Location = new Point(12, 396);
             textBox_CAN_Data.Multiline = true;
             textBox_CAN_Data.Name = "textBox_CAN_Data";
-            textBox_CAN_Data.Size = new Size(383, 145);
+            textBox_CAN_Data.Size = new Size(521, 377);
             textBox_CAN_Data.TabIndex = 24;
             // 
             // button_Receive
             // 
-            button_Receive.Location = new Point(445, 414);
+            button_Receive.Location = new Point(550, 388);
             button_Receive.Name = "button_Receive";
-            button_Receive.Size = new Size(47, 42);
+            button_Receive.Size = new Size(75, 43);
             button_Receive.TabIndex = 25;
             button_Receive.Text = "接收";
             button_Receive.Click += button_Receive_Click;
             // 
             // inputNumber_CAN_ID
             // 
-            inputNumber_CAN_ID.Location = new Point(140, 257);
+            inputNumber_CAN_ID.Hexadecimal = true;
+            inputNumber_CAN_ID.Location = new Point(140, 266);
             inputNumber_CAN_ID.Name = "inputNumber_CAN_ID";
             inputNumber_CAN_ID.SelectionStart = 1;
-            inputNumber_CAN_ID.Size = new Size(81, 32);
+            inputNumber_CAN_ID.ShowControl = false;
+            inputNumber_CAN_ID.Size = new Size(92, 44);
             inputNumber_CAN_ID.TabIndex = 26;
             inputNumber_CAN_ID.Text = "0";
             // 
             // label_CAN_ID
             // 
-            label_CAN_ID.Location = new Point(50, 266);
+            label_CAN_ID.Location = new Point(50, 277);
             label_CAN_ID.Name = "label_CAN_ID";
-            label_CAN_ID.Size = new Size(75, 23);
+            label_CAN_ID.Size = new Size(66, 33);
             label_CAN_ID.TabIndex = 27;
-            label_CAN_ID.Text = "ID";
+            label_CAN_ID.Text = "ID(HEX)";
+            label_CAN_ID.Click += label_CAN_ID_Click;
+            // 
+            // button_NumberScale
+            // 
+            button_NumberScale.DefaultBorderColor = Color.AliceBlue;
+            button_NumberScale.Location = new Point(11, 336);
+            button_NumberScale.Name = "button_NumberScale";
+            button_NumberScale.Size = new Size(70, 45);
+            button_NumberScale.TabIndex = 28;
+            button_NumberScale.Text = "十进制";
+            button_NumberScale.Click += button_NumberScale_Click;
             // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(884, 538);
+            ClientSize = new Size(1421, 807);
+            Controls.Add(button_NumberScale);
             Controls.Add(label_CAN_ID);
             Controls.Add(inputNumber_CAN_ID);
             Controls.Add(button_Receive);
@@ -438,7 +465,6 @@
             Controls.Add(button_boot);
             Controls.Add(button_Tip);
             Controls.Add(button_Transmit);
-            Controls.Add(tooltip1);
             Controls.Add(button_CloseDevice);
             Controls.Add(label2);
             Controls.Add(label_OpenedDevice);
@@ -468,7 +494,6 @@
         private AntdUI.Label label_OpenedDevice;
         private AntdUI.Label label2;
         private AntdUI.Button button_CloseDevice;
-        private AntdUI.Tooltip tooltip1;
         private AntdUI.Button button_Transmit;
         private AntdUI.Button button_Tip;
         private AntdUI.Button button_boot;
@@ -498,5 +523,6 @@
         private AntdUI.Button button_Receive;
         private AntdUI.InputNumber inputNumber_CAN_ID;
         private AntdUI.Label label_CAN_ID;
+        private AntdUI.Button button_NumberScale;
     }
 }
