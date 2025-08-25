@@ -17,7 +17,7 @@ public class Can_TL
        public uint CAN_ID;
         public byte[] bytes_send = new byte[8]; // 数据字节数组，长度为8
         public PcanChannelInformation[] channelsInformation= Array.Empty<PcanChannelInformation>(); // 初始化为一个空数组  
-        public char IsOpen = 'N'; // 是否打开设备，默认为未打开
+        public bool IsOpen = false; // 是否打开设备，默认为未打开
         public Can_TL()
         {
             GetCANDevice();
@@ -104,7 +104,7 @@ public class Can_TL
         }
         public uint SendData(uint ID,byte[] data,byte Length)
         {
-            if (IsOpen == 'N')
+            if (IsOpen == false)
             {
                 Console.WriteLine("设备未打开，请先打开设备。");
                 return 0; // 或者抛出异常
@@ -114,10 +114,7 @@ public class Can_TL
             message.DLC = Length; // 设置数据长度
             message.Data = data;
             message.ID = ID; // 设置CAN ID
-            // 发送数据的逻辑
-            // 这里需要使用 Peak.Can.Basic.Api.Send 方法来发送数据
-            // 假设 data 是要发送的数据字节数组
-            // 示例代码（需要根据实际情况调整）：
+           
             PcanStatus status = Api.Write(PCAN_channel, message);
             if (status != PcanStatus.OK)
             {
@@ -134,7 +131,7 @@ public class Can_TL
         {
             StringBuilder receivedDataBuilder = new StringBuilder();
             str = null;
-            if (IsOpen == 'N')
+            if (IsOpen == false)
             {
                 Console.WriteLine("设备未打开，请先打开设备。");
                 str = null;
@@ -172,6 +169,86 @@ public class Can_TL
             } while ((result & PcanStatus.ReceiveQueueEmpty) != PcanStatus.ReceiveQueueEmpty);
             str = receivedDataBuilder.ToString();
             return 1; // 返回成功标志
+        }
+        public bool Open(PcanChannel channel, Bitrate baudrate)
+        {
+            try
+            {
+                //关闭当前设备
+                var result = Api.Initialize(channel, baudrate);
+                if (result != PcanStatus.OK)
+                {
+                    // An error occurred
+                    // 
+                    Api.GetErrorText(result, out var errorText);
+                    Console.WriteLine(errorText);
+                    return false;
+                }
+                else
+                {
+                    IsOpen = true;
+                    Console.WriteLine($"The hardware represented by the handle {PCAN_channel} was successfully initialized.");
+                    return true;
+                }
+
+            }
+            catch (TypeInitializationException ex)
+            {
+                // 说明 Peak.Can.Basic.Api 类加载时出错
+                var detail = ex.InnerException?.Message ?? ex.Message;
+                Console.WriteLine("PCAN 初始化错误: " + detail);
+            }
+            catch (PcanBasicException ex)
+            {
+                // PCAN 自己抛的异常
+                Console.WriteLine("PCAN API 错误: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // 兜底异常
+                Console.WriteLine("其他异常: " + ex.Message);
+            }
+            return false;
+        }
+        public bool Close(PcanChannel channel)
+        {
+            try
+            {
+               //关闭当前设备
+                var result = Api.Uninitialize(channel);
+                if (result != PcanStatus.OK)
+                {
+                    // An error occurred
+                    // 
+                    Api.GetErrorText(result, out var errorText);
+                    Console.WriteLine(errorText);
+                    return false;
+                }
+                else
+                {
+                   IsOpen = false;
+                    Console.WriteLine($"The hardware represented by the handle {PCAN_channel} was successfully finalized.");
+                    return true;
+                }
+
+            }
+            catch (TypeInitializationException ex)
+            {
+                // 说明 Peak.Can.Basic.Api 类加载时出错
+                var detail = ex.InnerException?.Message ?? ex.Message;
+                Console.WriteLine("PCAN 初始化错误: " + detail);
+            }
+            catch (PcanBasicException ex)
+            {
+                // PCAN 自己抛的异常
+                Console.WriteLine("PCAN API 错误: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // 兜底异常
+                Console.WriteLine("其他异常: " + ex.Message);
+            }
+            return false;
         }
     }
 }

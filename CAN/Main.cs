@@ -141,49 +141,24 @@ namespace CAN
 
 
                 label_OpenedDevice.Text = " ";
-
-                PcanStatus result;
-                if (CAN_TL.IsOpen == 'Y')
+                
+               
+                if (CAN_TL.IsOpen == true)
                 {
-
-
-                    //先关闭当前设备
-                    result = Api.Uninitialize(CAN_TL.PCAN_channel);
-                    if (result != PcanStatus.OK)
-                    {
-                        // An error occurred
-                        // 
-                        Api.GetErrorText(result, out var errorText);
-                        Console.WriteLine(errorText);
-                    }
-                    else
-                    {
-                        CAN_TL.IsOpen = 'N';
-                        Console.WriteLine($"The hardware represented by the handle {CAN_TL.PCAN_channel} was successfully finalized.");
-                    }
+                    CAN_TL.Close(CAN_TL.PCAN_channel);
                 }
-                // label_OpenedDevice.Text = " ";
+               
                 CAN_TL.PCAN_channel = CAN_TL.channelsInformation[select_AvailableDevice.SelectedIndex].ChannelHandle;
+
                 //打开新设备
-                result = Api.Initialize(CAN_TL.PCAN_channel, CAN_TL.CANBaudrate); // 使用PcanStatus类型  
-                if (result != PcanStatus.OK)
+               if( CAN_TL.Open(CAN_TL.PCAN_channel,CAN_TL.CANBaudrate))
                 {
-                    CAN_TL.IsOpen = 'N';
-                    // 错误处理  
-                    Api.GetErrorText(result, out var errorText);
-                    Console.WriteLine(errorText);
-                }
-                else
-                {
-                    CAN_TL.IsOpen = 'Y';
                     label_OpenedDevice.Text = $"{select_AvailableDevice.Text}";
-                    // A success message is shown  
-                    Console.WriteLine($"The hardware represented by the handle {CAN_TL.PCAN_channel} was successfully initialized.");
                 }
             }
             else
             {
-                CAN_TL.IsOpen = 'N';
+                CAN_TL.IsOpen = false;
                 MessageBox.Show("Please select a CAN device to open.");
             }
 
@@ -196,19 +171,9 @@ namespace CAN
 
         private void button_CloseDevice_Click(object sender, EventArgs e)
         {
-            //先关闭当前设备
-            var result = Api.Uninitialize(CAN_TL.PCAN_channel);
-            if (result != PcanStatus.OK)
+            if (CAN_TL.Close(CAN_TL.PCAN_channel))
             {
-                // An error occurred
-                // 
-                Api.GetErrorText(result, out var errorText);
-                Console.WriteLine(errorText);
-            }
-            else
-            {
-                CAN_TL.IsOpen = 'N';
-                Console.WriteLine($"The hardware represented by the handle {CAN_TL.PCAN_channel} was successfully finalized.");
+                label_OpenedDevice.Text = " ";
             }
         }
 
